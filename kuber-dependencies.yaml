@@ -1,0 +1,45 @@
+---
+- name: Start
+  hosts: all
+  become: yes
+  tasks:
+  - name: install docker
+    apt:
+     name: docker.io
+     state: present
+     update_cache: true
+
+  - name: install APT transport HTTPS
+    apt:
+     name: apt-transport-https
+     state: present
+
+  - name: add Kuber apt-key
+    apt_key:
+     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+     state: present
+
+  - name: add apt repo
+    apt_repository:
+     repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+     state: present
+     filename: 'kubernetes'
+
+  - name: install kubelet
+    apt:
+     name: kubelet
+     state: present
+     update_cache: true
+
+  - name: install kubeadm
+    apt:
+     name: kubeadm
+     state: present
+
+- hosts: master
+  become: yes
+  tasks: 
+  - name: install kubectl
+    apt:
+     name: kubectl
+     state: present
